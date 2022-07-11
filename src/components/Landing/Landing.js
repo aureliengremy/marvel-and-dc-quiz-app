@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 const Landing = () => {
     
@@ -11,7 +12,7 @@ const Landing = () => {
         setTimeout(() => {
             refWolverine.current.classList.remove('startingImg')
             setBtn(true)
-        }, 1000)
+        }, 500)
     }, [])
 
     const setLeftImg = () => {
@@ -32,14 +33,14 @@ const Landing = () => {
     const displayBtn = btn && (
         <Fragment>
             <div className="leftBox" onMouseOver={setLeftImg} onMouseOut={clearImg}>
-                <button className="btn-landing">
+                <Link to='signup' className="btn-landing">
                     Inscription
-                </button>
+                </Link>
             </div>
             <div className="rightBox" onMouseOver={setRightImg} onMouseOut={clearImg}>
-                <button className="btn-landing">
+                <Link to='login' className="btn-landing">
                     Connexion
-                </button>
+                </Link>
             </div>
         </Fragment>
     )

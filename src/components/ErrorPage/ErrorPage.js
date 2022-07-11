@@ -1,10 +1,22 @@
 import React from 'react'
+import batman from '../../images/batman.png'
 
 const ErrorPage = () => {
+
+    const centerH2 = {
+        textAlign: 'center',
+        marginTop: '50px'
+    }
+    const centerImg = {
+        display: 'inline',
+        margin: '40px auto'
+    }
+
   return (
     <div className="quiz-bg">
         <div className="container">
-            ErrorPage
+            <h2 style={centerH2}>Oups, cette page n'existe pas !</h2>
+            <img style={centerImg} src={batman} alt="error page"/>
         </div>
     </div>
   )
