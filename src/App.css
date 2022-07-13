@@ -331,7 +331,7 @@ footer {
   display: block;
   margin: 0 auto 20px;
   min-width: 150px;
-  background-color: transparent;
+  background-color: var(--red-color);
   color: var(--white-color);
   padding: 7px;
   font-size: 15px;
