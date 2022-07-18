@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { auth } from '../../Firebase/configFirebase'
+import { auth, user } from '../../Firebase/configFirebase'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { Link, useNavigate } from 'react-router-dom'
+import { setDoc } from 'firebase/firestore'
 
 const Signup = () => {
 
@@ -28,7 +29,13 @@ const Signup = () => {
     e.preventDefault()
     const { email, password } = loginData
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(authUser => {
+        return setDoc(user(authUser.user.uid), {
+          pseudo,
+          email
+        })
+      })
+      .then(() => {
         // const user = userCredential.user;
         setLoginData({ ...data })
         navigate('/welcome')
