@@ -23,16 +23,13 @@ const Logout = () => {
           });
       }
 
-    }, [checked])
+    }, [checked, navigate])
 
     const handleChange = e => {
         console.log(e)
         // setChecked(true)
         setChecked(e.target.checked)
     }
-
-
-    
 
   return (
     <div className="logoutContainer">
