@@ -13,7 +13,6 @@ const Welcome = () => {
 
   const navigate = useNavigate()
 
-
   useEffect(() => {
     // vérifier compte existant
     const checkAuth = onAuthStateChanged(auth, (user) => {
@@ -33,7 +32,7 @@ const Welcome = () => {
         .then(snapshot => {
           if (snapshot.exists()) {
             const docData = snapshot.data()
-            console.log(docData)
+            // console.log(docData)
             setUserData(docData)
           }
         })
