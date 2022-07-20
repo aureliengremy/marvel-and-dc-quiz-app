@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { QuizMarvel } from '../QuizQuestion/QuizMarvel';
 import Levels from './Levels';
 import ProgressBar from './ProgressBar';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 class Quiz extends Component {
 
@@ -15,10 +17,27 @@ class Quiz extends Component {
         questionId: 0,
         btnDisabled: true,
         userAnswer: null,
-        score: 0
+        score: 0,
+        welcomeMsg: false
     }
 
     quizzDataRef = React.createRef()
+
+    showWelcomeMsg = pseudo => {
+        if (!this.state.welcomeMsg) {
+            this.setState({ 
+                welcomeMsg: true 
+            })
+            toast.info(`Welcome ${pseudo}`, {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false
+            });
+        }
+    }
 
     loadQuestion = (level) => {
         // console.log(level)
@@ -46,13 +65,17 @@ class Quiz extends Component {
                 options: this.state.storeQuestions[this.state.questionId].options
             })
         }
-        if(this.state.questionId !== prevState.questionId) {
+        if (this.state.questionId !== prevState.questionId) {
             this.setState({
                 question: this.state.storeQuestions[this.state.questionId].question,
                 options: this.state.storeQuestions[this.state.questionId].options,
                 userAnswer: null,
                 btnDisabled: true
             })
+        }
+
+        if (this.props.userData.pseudo) {
+            this.showWelcomeMsg(this.props.userData.pseudo)
         }
     }
     submitAnswer = selectedAnswer => {
@@ -63,22 +86,39 @@ class Quiz extends Component {
     }
 
     nextQuestion = () => {
-        if(this.state.questionId === this.state.maxQuestion -1) {
+        if (this.state.questionId === this.state.maxQuestion - 1) {
             //end
         } else {
-            this.setState({ 
-                questionId: this.state.questionId +1
-            }) 
+            this.setState({
+                questionId: this.state.questionId + 1
+            })
         }
         // const answer = QuizMarvel[0].quizz[this.state.quizLevel[this.state.quizLevelBegin]][this.state.questionId].answer
         // console.log(this.state.userAnswer)
         // console.log(this.quizzDataRef[this.state.questionId].answer)
         const answer = this.quizzDataRef[this.state.questionId].answer
-        if(this.state.userAnswer === answer) {
+        if (this.state.userAnswer === answer) {
             this.setState({
                 score: this.state.score + 1
             })
-        }     
+            toast.success('Bravo! +1 point', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false
+                });
+        } else {
+            toast.error('Dommage! 0 point', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false
+                });
+        }
     }
 
 
@@ -104,6 +144,7 @@ class Quiz extends Component {
             <div>
                 <Levels />
                 <ProgressBar />
+                <ToastContainer />
                 <h2>{this.state.question}</h2>
                 {displayOption}
                 <button className="btnSubmit"
