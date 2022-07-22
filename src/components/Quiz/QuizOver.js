@@ -9,18 +9,26 @@ const QuizOver = React.forwardRef((props, ref) => {
         percent, 
         score, 
         maxQuestion, 
-        quizLevelSelect} 
+        quizLevelSelect,
+        loadLevelQuestion
+    } 
     = props;
 
     const [asked, setAsked] = useState([])
 
-    console.log(asked)
+    // console.log(asked)
 
     useEffect(() => {
         setAsked(ref.current)
     }, [ref])
 
     const averageScore = maxQuestion / 2
+
+    if(score < averageScore) {
+        setTimeout(() => {
+            loadLevelQuestion(quizLevelSelect)
+        },5000)
+    }
 
     const decision = score >= averageScore ? (
         <Fragment>
@@ -30,12 +38,12 @@ const QuizOver = React.forwardRef((props, ref) => {
                 quizLevelSelect < levelName.length ? (
                     <Fragment>
                         <p className="successMsg">Bravo, passez au niveau suivant !</p>
-                        <button className="btnResult success">Niveau suivant</button>
+                        <button className="btnResult success" onClick={() => loadLevelQuestion(quizLevelSelect)}>Niveau suivant</button>
                     </Fragment>
                 ) : (
                     <Fragment>
                         <p className="successMsg">Bravo, vous êtes un expert !</p>
-                        <button className="btnResult success">Niveau suivant</button>
+                        <button className="btnResult info" onClick={() => loadLevelQuestion(0)}>Acceuil</button>
                     </Fragment>
                 )    
             }
@@ -75,6 +83,7 @@ const QuizOver = React.forwardRef((props, ref) => {
     ) : (
         <tr >
             <td colSpan="3">
+                <div className="loader"></div>
                 <p style={{textAlign: 'center', color: 'red'}}>
                     Pas de réponses!
                 </p>

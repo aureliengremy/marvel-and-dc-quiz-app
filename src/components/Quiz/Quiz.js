@@ -8,7 +8,10 @@ import QuizOver from './QuizOver';
 
 class Quiz extends Component {
 
-    state = {
+    constructor(props) {
+      super(props)
+
+      this.initialState = {
         quizLevel: ["debutant", "confirme", "expert"],
         quizLevelSelect: 0,
         maxQuestion: 10,
@@ -22,11 +25,31 @@ class Quiz extends Component {
         welcomeMsg: false,
         quizEnd: false,
         percent: 0
+      }
+    
+      this.state = this.initialState
+      this.quizzDataRef = React.createRef()
     }
 
-    quizzDataRef = React.createRef()
+    // state = {
+    //     quizLevel: ["debutant", "confirme", "expert"],
+    //     quizLevelSelect: 0,
+    //     maxQuestion: 10,
+    //     storeQuestions: [],
+    //     question: null,
+    //     options: [],
+    //     questionId: 0,
+    //     btnDisabled: true,
+    //     userAnswer: null,
+    //     score: 0,
+    //     welcomeMsg: false,
+    //     quizEnd: false,
+    //     percent: 0
+    // }
 
-    showWelcomeMsg = pseudo => {
+    // quizzDataRef = React.createRef()
+
+    showToastMsg = pseudo => {
         if (!this.state.welcomeMsg) {
             this.setState({
                 welcomeMsg: true
@@ -63,13 +86,13 @@ class Quiz extends Component {
     componentDidUpdate(prevProps, prevState) {
         // ne pas oublier le 'state' pour la condition !!!! 
         // console.log(this.state.storeQuestions !== prevState.storeQuestions)
-        if (this.state.storeQuestions !== prevState.storeQuestions) {
+        if ((this.state.storeQuestions !== prevState.storeQuestions) && this.state.storeQuestions.length) {
             this.setState({
                 question: this.state.storeQuestions[this.state.questionId].question,
                 options: this.state.storeQuestions[this.state.questionId].options
             })
         }
-        if (this.state.questionId !== prevState.questionId) {
+        if ((this.state.questionId !== prevState.questionId) && this.state.storeQuestions.length) {
             this.setState({
                 question: this.state.storeQuestions[this.state.questionId].question,
                 options: this.state.storeQuestions[this.state.questionId].options,
@@ -77,9 +100,15 @@ class Quiz extends Component {
                 btnDisabled: true
             })
         }
+        // console.log('quizEnd : ' + this.state.quizEnd)
+        if(this.state.quizEnd !== prevState.quizEnd) {
+            const percentScore = this.getPercent(this.state.maxQuestion, this.state.score)
+            // maintenant que score est à jour on peut calculer le % est changer le state dans gameOver()
+            this.gameOver(percentScore)
+        }
 
-        if (this.props.userData.pseudo) {
-            this.showWelcomeMsg(this.props.userData.pseudo)
+        if (this.props.userData.pseudo !== prevProps.userData.pseudo) {
+            this.showToastMsg(this.props.userData.pseudo)
         }
     }
     submitAnswer = selectedAnswer => {
@@ -90,9 +119,14 @@ class Quiz extends Component {
     }
 
     nextQuestion = () => {
-        console.log(this.state.questionId === this.state.maxQuestion - 1)
+        // console.log(this.state.questionId === this.state.maxQuestion - 1)
         if (this.state.questionId === this.state.maxQuestion - 1) {
-            this.gameOver()
+            // gameOver call dans une condition qui verifie state: QuizEnd dans le CDU
+            // car on veut récupérer le score avec le dernier state mise à jour
+            // this.gameOver()
+            this.setState({
+                quizEnd: true
+            })
         } else {
             this.setState({
                 questionId: this.state.questionId + 1
@@ -130,22 +164,25 @@ class Quiz extends Component {
         return (ourScore / maxQuest) * 100
     }
 
-    gameOver = () => {
+    gameOver = (percent) => {
 
-        const percentScore = this.getPercent(this.state.maxQuestion, this.state.score)
-
-        if (percentScore > 50) {
+        if (percent > 50) {
             this.setState({
                 quizLevelSelect: this.state.quizLevelSelect + 1,
-                percent: percentScore,
-                quizEnd: true
+                percent: percent
+                // changement du state QuizEnd dans le nextQuestion
             })
         } else {
             this.setState({
-                percent: percentScore,
-                quizEnd: true
+                percent: percent
             })
         }
+    }
+
+    loadLevelQuestion = params => {
+        this.setState({...this.initialState, quizLevelSelect: params})
+        this.loadQuestion(this.state.quizLevel[params])
+        // console.log(params)
     }
 
 
@@ -175,7 +212,8 @@ class Quiz extends Component {
                     percent={this.state.percent} 
                     score={this.state.score}
                     maxQuestion={this.state.maxQuestion}
-                    quizLevelSelect={this.state.quizLevelSelect}/>
+                    quizLevelSelect={this.state.quizLevelSelect}
+                    loadLevelQuestion={this.loadLevelQuestion}/>
             ) :
                 (
                     <Fragment>
