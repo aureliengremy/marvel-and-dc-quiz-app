@@ -5,6 +5,7 @@ import { auth, user } from '../Firebase/configFirebase'
 import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import { getDoc } from 'firebase/firestore'
+import Loader from '../Loader/Loader';
 
 const Welcome = () => {
 
@@ -44,14 +45,15 @@ const Welcome = () => {
     return () => {
       checkAuth()
     }
-  }, [userSession])
+  })
 
 
   // console.log(auth.currentUser);
 
   return userSession === null ? (
     <Fragment>
-      <div className="loader"></div>
+      <Loader loadingMsg={'Authentification ...'} 
+              styling={{textAlign: 'center', color: 'white'}}/>
     </Fragment>
   ) : (
     <div className="quiz-bg">
