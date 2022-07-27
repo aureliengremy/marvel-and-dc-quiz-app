@@ -2,6 +2,8 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth'
 import { getFirestore, doc } from 'firebase/firestore';
 
+// const { initializeAppCheck, ReCaptchaV3Provider } = require("firebase/app-check");
+
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -11,7 +13,13 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
+// const appCheck = initializeAppCheck(firebaseConfig, {
+//   provider: new ReCaptchaV3Provider(process.env.REACT_APP_APP_CHECK),
+//   isTokenAutoRefreshEnabled: true
+// });
+
 const app = initializeApp(firebaseConfig)
+
 export const auth = getAuth(app)
 
 export const db = getFirestore()
